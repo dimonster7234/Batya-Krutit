@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Батя Крутит — Суши Бар</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & ROOT ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#93C572;
+  --p2:#6ea84d;
+  --p3:#b8dda0;
+  --p-light:#edf7e4;
+  --dark:#1a1f2e;
+  --dark2:#252b3b;
+  --dark3:#2f3748;
+  --gray:#4a5568;
+  --gray2:#718096;
+  --border:#e2e8f0;
+  --cream:#f8faf5;
+  --white:#ffffff;
+  --red:#e53e3e;
+  --amber:#d97706;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;color:var(--dark);background:var(--cream);overflow-x:hidden;cursor:none}
+
+/* ===== CUSTOM CURSOR ===== */
+.cursor{width:12px;height:12px;border-radius:50%;background:var(--p);position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:transform .15s,width .2s,height .2s;transform:translate(-50%,-50%)}
+.cursor-follower{width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(147,197,114,.5);position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:transform .4s cubic-bezier(.23,1,.32,1),width .3s,height .3s,opacity .3s;transform:translate(-50%,-50%)}
+body:hover .cursor{opacity:1}
+
+/* ===== NOISE TEXTURE OVERLAY ===== */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:var(--p);border-radius:3px}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:0 60px;height:72px;display:flex;align-items:center;justify-content:space-between;transition:all .4s}
+nav.scrolled{background:rgba(26,31,46,.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-logo img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--p);transition:.3s}
+.nav-logo-text{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);letter-spacing:3px}
+.nav-links{display:flex;gap:40px;list-style:none}
+.nav-links a{text-decoration:none;color:rgba(255,255,255,.6);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:.25s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1.5px;background:var(--p);transition:.3s}
+.nav-links a:hover{color:var(--white)}
+.nav-links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-phone{color:rgba(255,255,255,.5);font-size:13px;font-weight:600;text-decoration:none;transition:.25s}
+.nav-phone:hover{color:var(--p)}
+.btn-cart{background:var(--p);color:var(--white);border:none;padding:12px 24px;border-radius:50px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;cursor:none;display:flex;align-items:center;gap:10px;transition:.25s;letter-spacing:.5px}
+.btn-cart:hover{background:var(--p2);transform:translateY(-1px)}
+.cart-badge{background:var(--white);color:var(--p2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;transition:.3s}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden;background:var(--dark)}
+.hero-video-bg{position:absolute;inset:0;z-index:0}
+.hero-img{width:100%;height:100%;object-fit:cover;opacity:.35;transform:scale(1.05);animation:heroZoom 20s ease-in-out infinite alternate}
+@keyframes heroZoom{from{transform:scale(1.05)}to{transform:scale(1.12)}}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(110deg,rgba(26,31,46,.97) 0%,rgba(26,31,46,.8) 45%,rgba(26,31,46,.4) 100%);z-index:1}
+.hero-overlay2{position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(to top,var(--dark) 0%,transparent 100%);z-index:2}
+.hero-content{position:relative;z-index:3;max-width:800px;padding:0 60px;margin-top:72px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:36px;animation:fadeUp .8s .2s both}
+.hero-dot{width:8px;height:8px;border-radius:50%;background:var(--p);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hero-eyebrow-text{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--p)}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,12vw,160px);line-height:.88;letter-spacing:4px;color:var(--white);margin-bottom:28px;animation:fadeUp .9s .3s both}
+.hero-title .line2{display:block;color:var(--p);-webkit-text-stroke:2px var(--p);text-shadow:0 0 60px rgba(147,197,114,.3)}
+.hero-title .line3{display:block;font-size:clamp(32px,5vw,64px);color:rgba(255,255,255,.4);font-family:'Bebas Neue',sans-serif;letter-spacing:8px}
+.hero-desc{color:rgba(255,255,255,.55);font-size:16px;line-height:1.8;max-width:460px;margin-bottom:52px;animation:fadeUp 1s .4s both}
+.hero-ctas{display:flex;gap:16px;flex-wrap:wrap;animation:fadeUp 1s .5s both}
+.btn-primary{background:var(--p);color:var(--white);border:none;padding:18px 44px;border-radius:50px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;cursor:none;transition:.3s;letter-spacing:1px;text-transform:uppercase;position:relative;overflow:hidden}
+.btn-primary::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);transform:translateX(-100%);transition:.4s}
+.btn-primary:hover::before{transform:translateX(0)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(147,197,114,.35)}
+.btn-ghost{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.25);padding:18px 44px;border-radius:50px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;cursor:none;transition:.3s;letter-spacing:1px;text-transform:uppercase}
+.btn-ghost:hover{border-color:rgba(255,255,255,.7);background:rgba(255,255,255,.07);transform:translateY(-2px)}
+.hero-stats{position:absolute;right:60px;bottom:80px;z-index:3;display:flex;flex-direction:column;gap:32px;animation:fadeLeft 1s .6s both}
+.hero-stat{text-align:right}
+.hero-stat-n{font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--p);line-height:1;letter-spacing:2px}
+.hero-stat-l{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:2px}
+.hero-scroll{position:absolute;bottom:36px;left:60px;z-index:3;display:flex;align-items:center;gap:12px;color:rgba(255,255,255,.35);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;animation:fadeUp 1s .8s both}
+.scroll-line{width:48px;height:1px;background:rgba(255,255,255,.25);position:relative;overflow:hidden}
+.scroll-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--p);animation:scrollAnim 2s infinite}
+@keyframes scrollAnim{0%{left:-100%}100%{left:100%}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeLeft{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+
+/* ===== MARQUEE ===== */
+.marquee-section{background:var(--p);padding:18px 0;overflow:hidden;position:relative;z-index:10}
+.marquee-track{display:flex;gap:0;white-space:nowrap;animation:marquee 25s linear infinite}
+.marquee-item{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;color:var(--dark);padding:0 40px;display:flex;align-items:center;gap:20px}
+.marquee-sep{width:6px;height:6px;border-radius:50%;background:var(--dark2);opacity:.4}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ===== SECTION LABEL ===== */
+.section-label{display:inline-flex;align-items:center;gap:10px;margin-bottom:20px}
+.label-line{width:32px;height:2px;background:var(--p)}
+.label-text{font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--p)}
+
+/* ===== CATALOG ===== */
+.catalog{padding:120px 60px;background:var(--cream);position:relative}
+.catalog::before{content:'';position:absolute;top:0;right:0;width:400px;height:400px;background:radial-gradient(circle,rgba(147,197,114,.1) 0%,transparent 70%);pointer-events:none}
+.catalog-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:60px}
+.catalog-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,96px);line-height:.9;color:var(--dark);letter-spacing:3px}
+.catalog-title em{display:block;color:var(--p);font-style:normal}
+.cats-wrap{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:56px}
+.cat-btn{padding:11px 24px;border-radius:50px;border:1.5px solid var(--border);background:var(--white);color:var(--gray2);font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;cursor:none;transition:.25s;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase}
+.cat-btn:hover{border-color:var(--p);color:var(--p)}
+.cat-btn.active{background:var(--p);border-color:var(--p);color:var(--white);box-shadow:0 8px 24px rgba(147,197,114,.3)}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px}
+.product-card{background:var(--white);border-radius:24px;overflow:hidden;border:1px solid var(--border);transition:.4s cubic-bezier(.23,1,.32,1);position:relative;cursor:none}
+.product-card:hover{transform:translateY(-10px);box-shadow:0 30px 80px rgba(45,55,72,.12);border-color:var(--p3)}
+.prod-img-wrap{position:relative;height:220px;overflow:hidden;background:#0d1117}
+.prod-img-wrap img{width:100%;height:100%;object-fit:cover;transition:.6s cubic-bezier(.23,1,.32,1)}
+.product-card:hover .prod-img-wrap img{transform:scale(1.08)}
+.prod-badge{position:absolute;top:14px;left:14px;z-index:2;padding:5px 14px;border-radius:50px;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.badge-hit{background:var(--p);color:var(--white)}
+.badge-new{background:var(--red);color:var(--white)}
+.badge-stop{background:rgba(0,0,0,.6);color:rgba(255,255,255,.5)}
+.prod-fav{position:absolute;top:14px;right:14px;z-index:2;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:none;transition:.25s;font-size:16px}
+.prod-fav:hover{background:rgba(255,255,255,.3);transform:scale(1.1)}
+.prod-fav.active{background:var(--red);border-color:var(--red)}
+.prod-overlay{position:absolute;bottom:0;left:0;right:0;padding:20px 20px 12px;background:linear-gradient(to top,rgba(10,12,20,.9) 0%,transparent 100%);opacity:0;transition:.35s;z-index:2}
+.product-card:hover .prod-overlay{opacity:1}
+.prod-overlay-text{color:rgba(255,255,255,.8);font-size:12px;line-height:1.5}
+.prod-body{padding:22px 22px 20px}
+.prod-category{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--p);margin-bottom:8px}
+.prod-name{font-weight:800;font-size:17px;margin-bottom:6px;color:var(--dark);line-height:1.2}
+.prod-desc{color:var(--gray2);font-size:13px;line-height:1.6;margin-bottom:16px}
+.prod-meta{display:flex;gap:16px;margin-bottom:18px}
+.prod-meta-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gray2);font-weight:600}
+.prod-meta-icon{font-size:14px}
+.prod-footer{display:flex;align-items:center;justify-content:space-between}
+.prod-price{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--dark);letter-spacing:1px;line-height:1}
+.prod-price-old{font-size:14px;color:var(--gray2);text-decoration:line-through;font-weight:500;margin-top:2px}
+.add-to-cart{width:44px;height:44px;border-radius:50%;background:var(--p);border:none;color:var(--white);font-size:22px;cursor:none;display:flex;align-items:center;justify-content:center;transition:.3s;flex-shrink:0;font-weight:300;line-height:1}
+.add-to-cart:hover{background:var(--p2);transform:scale(1.12);box-shadow:0 8px 24px rgba(147,197,114,.4)}
+.add-to-cart.added{background:var(--dark);transform:scale(1.05)}
+
+/* ===== ABOUT / STORY ===== */
+.about{padding:120px 60px;background:var(--dark);position:relative;overflow:hidden}
+.about::before{content:'БАТЯ';font-family:'Bebas Neue',sans-serif;font-size:30vw;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.02);letter-spacing:20px;pointer-events:none;white-space:nowrap}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
+.about-text .section-label{display:inline-flex}
+.about-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,90px);color:var(--white);line-height:.9;letter-spacing:3px;margin-bottom:32px}
+.about-title span{color:var(--p)}
+.about-body{color:rgba(255,255,255,.55);font-size:15px;line-height:1.9;margin-bottom:40px}
+.about-body strong{color:rgba(255,255,255,.85);font-weight:700}
+.about-features{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:48px}
+.feat-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:24px;transition:.3s}
+.feat-card:hover{background:rgba(147,197,114,.08);border-color:rgba(147,197,114,.2)}
+.feat-icon{font-size:32px;margin-bottom:12px}
+.feat-title{font-weight:800;font-size:14px;color:var(--white);margin-bottom:6px;letter-spacing:.5px}
+.feat-desc{font-size:12px;color:rgba(255,255,255,.4);line-height:1.6}
+.about-img-stack{position:relative;height:600px}
+.about-img-main{width:75%;height:80%;object-fit:cover;border-radius:24px;position:absolute;right:0;top:0;border:2px solid rgba(255,255,255,.06)}
+.about-img-sec{width:55%;height:55%;object-fit:cover;border-radius:20px;position:absolute;left:0;bottom:0;border:2px solid rgba(255,255,255,.06);box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.about-img-badge{position:absolute;top:50%;left:30%;transform:translate(-50%,-50%);background:var(--p);border-radius:20px;padding:24px 28px;text-align:center;box-shadow:0 20px 60px rgba(147,197,114,.4);z-index:3}
+.badge-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--white);line-height:1}
+.badge-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.8)}
+
+/* ===== GALLERY ===== */
+.gallery{padding:0 0 120px;background:var(--dark)}
+.gallery-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,96px);color:var(--white);letter-spacing:3px;margin-bottom:48px;padding:0 60px}
+.gallery-title span{color:var(--p)}
+.gallery-grid{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(2,220px);gap:4px;padding:0 60px}
+.g-item{overflow:hidden;border-radius:12px;position:relative}
+.g-item img{width:100%;height:100%;object-fit:cover;transition:.5s cubic-bezier(.23,1,.32,1);filter:brightness(.9)}
+.g-item:hover img{transform:scale(1.08);filter:brightness(1)}
+.g-item:nth-child(1){grid-column:span 5;grid-row:span 2}
+.g-item:nth-child(2){grid-column:span 4}
+.g-item:nth-child(3){grid-column:span 3}
+.g-item:nth-child(4){grid-column:span 3}
+.g-item:nth-child(5){grid-column:span 4}
+.g-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,31,46,.7) 0%,transparent 50%);opacity:0;transition:.35s;display:flex;align-items:flex-end;padding:20px}
+.g-item:hover .g-overlay{opacity:1}
+.g-label{color:var(--white);font-size:13px;font-weight:700;letter-spacing:1px}
+
+/* ===== DELIVERY ===== */
+.delivery{padding:120px 60px;background:var(--cream);position:relative;overflow:hidden}
+.delivery-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,96px);color:var(--dark);letter-spacing:3px;margin-bottom:16px}
+.delivery-title span{color:var(--p)}
+.delivery-sub{color:var(--gray2);font-size:16px;margin-bottom:72px;max-width:500px;line-height:1.7}
+.delivery-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.del-card{background:var(--white);border-radius:24px;padding:48px 36px;border:1px solid var(--border);transition:.4s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden}
+.del-card::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;background:rgba(147,197,114,.06);transition:.4s}
+.del-card:hover{transform:translateY(-8px);box-shadow:0 30px 80px rgba(45,55,72,.1);border-color:var(--p3)}
+.del-card:hover::before{background:rgba(147,197,114,.12)}
+.del-card.featured{background:var(--dark);border-color:var(--dark)}
+.del-card.featured .del-icon{background:rgba(147,197,114,.15)}
+.del-card.featured .del-title{color:var(--white)}
+.del-card.featured .del-desc{color:rgba(255,255,255,.5)}
+.del-card.featured::before{background:rgba(147,197,114,.05)}
+.del-icon{width:72px;height:72px;border-radius:20px;background:var(--p-light);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:28px}
+.del-title{font-weight:800;font-size:22px;margin-bottom:12px;color:var(--dark)}
+.del-desc{color:var(--gray2);font-size:14px;line-height:1.7;margin-bottom:28px}
+.del-detail{display:flex;flex-direction:column;gap:10px}
+.del-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,0,0,.06)}
+.del-card.featured .del-row{border-bottom-color:rgba(255,255,255,.06)}
+.del-row:last-child{border-bottom:none}
+.del-row-label{font-size:13px;color:var(--gray2)}
+.del-card.featured .del-row-label{color:rgba(255,255,255,.4)}
+.del-row-val{font-weight:700;font-size:13px;color:var(--dark)}
+.del-card.featured .del-row-val{color:var(--p)}
+
+/* ===== CONTACT ===== */
+.contact{padding:120px 60px;background:var(--dark);position:relative;overflow:hidden}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.contact-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,90px);color:var(--white);line-height:.9;letter-spacing:3px;margin-bottom:24px}
+.contact-title span{color:var(--p)}
+.contact-desc{color:rgba(255,255,255,.5);font-size:15px;line-height:1.8;margin-bottom:48px}
+.contact-info{display:flex;flex-direction:column;gap:24px;margin-bottom:48px}
+.contact-row{display:flex;align-items:flex-start;gap:20px}
+.contact-icon{width:48px;height:48px;border-radius:14px;background:rgba(147,197,114,.12);border:1px solid rgba(147,197,114,.2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.contact-row-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--p);margin-bottom:4px}
+.contact-row-val{font-size:15px;color:rgba(255,255,255,.8);font-weight:600}
+.contact-row-val a{color:inherit;text-decoration:none}
+.contact-row-val a:hover{color:var(--p)}
+.social-row{display:flex;gap:12px}
+.social-btn{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(255,255,255,.5);transition:.25s;cursor:none;text-decoration:none}
+.social-btn:hover{border-color:var(--p);color:var(--p);background:rgba(147,197,114,.1)}
+.order-form{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:28px;padding:48px}
+.form-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--white);letter-spacing:2px;margin-bottom:32px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px}
+.form-input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 20px;color:var(--white);font-family:'Montserrat',sans-serif;font-size:14px;transition:.25s;outline:none}
+.form-input:focus{border-color:var(--p);background:rgba(147,197,114,.06)}
+.form-input::placeholder{color:rgba(255,255,255,.2)}
+.form-input.textarea{resize:none;height:120px}
+.form-submit{width:100%;padding:18px;background:var(--p);color:var(--white);border:none;border-radius:14px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;cursor:none;transition:.3s;letter-spacing:1px;text-transform:uppercase;margin-top:8px}
+.form-submit:hover{background:var(--p2);transform:translateY(-2px);box-shadow:0 12px 32px rgba(147,197,114,.35)}
+
+/* ===== CART SIDEBAR ===== */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:800;opacity:0;pointer-events:none;transition:.35s;backdrop-filter:blur(6px)}
+.cart-overlay.open{opacity:1;pointer-events:all}
+.cart-sidebar{position:fixed;top:0;right:0;bottom:0;width:480px;background:var(--dark2);z-index:801;transform:translateX(100%);transition:.4s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-left:1px solid rgba(255,255,255,.06)}
+.cart-sidebar.open{transform:translateX(0)}
+.cart-head{padding:28px 32px 24px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+.cart-head-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--white);letter-spacing:2px}
+.cart-head-count{font-size:13px;color:rgba(255,255,255,.35);font-weight:600}
+.close-cart{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,255,255,.12);background:none;cursor:none;font-size:16px;color:rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;transition:.25s}
+.close-cart:hover{border-color:rgba(255,255,255,.4);color:var(--white);background:rgba(255,255,255,.05)}
+.cart-items-list{flex:1;overflow-y:auto;padding:24px 32px}
+.cart-empty{text-align:center;padding:80px 24px;color:rgba(255,255,255,.25)}
+.empty-icon{font-size:64px;display:block;margin-bottom:20px}
+.empty-txt{font-size:16px;font-weight:700;margin-bottom:8px;color:rgba(255,255,255,.35)}
+.empty-sub{font-size:13px;color:rgba(255,255,255,.2)}
+.cart-item{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.cart-item:last-child{border-bottom:none}
+.ci-img{width:72px;height:72px;border-radius:14px;object-fit:cover;flex-shrink:0;background:var(--dark3)}
+.ci-info{flex:1}
+.ci-name{font-weight:700;font-size:15px;color:var(--white);margin-bottom:6px}
+.ci-price{color:var(--p);font-weight:800;font-size:15px;margin-bottom:10px}
+.ci-qty-row{display:flex;align-items:center;gap:14px}
+.qty-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(255,255,255,.12);background:none;cursor:none;font-size:16px;color:rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;transition:.25s;line-height:1}
+.qty-btn:hover{border-color:var(--p);color:var(--p)}
+.qty-n{font-weight:800;font-size:16px;color:var(--white);min-width:20px;text-align:center}
+.ci-del{margin-left:auto;background:none;border:none;cursor:none;font-size:18px;color:rgba(255,255,255,.2);transition:.25s;padding:4px}
+.ci-del:hover{color:var(--red);transform:scale(1.1)}
+.cart-footer{padding:24px 32px;border-top:1px solid rgba(255,255,255,.06)}
+.delivery-switch{display:flex;background:rgba(255,255,255,.05);border-radius:14px;padding:5px;margin-bottom:24px}
+.ds-opt{flex:1;padding:12px;border-radius:10px;border:none;background:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;cursor:none;transition:.3s;color:rgba(255,255,255,.35);letter-spacing:.5px}
+.ds-opt.active{background:var(--p);color:var(--white);box-shadow:0 4px 16px rgba(147,197,114,.25)}
+.cart-total-block{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.ct-label{color:rgba(255,255,255,.4);font-size:13px;font-weight:600}
+.ct-value{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--white);letter-spacing:2px}
+.ct-delivery{font-size:12px;color:rgba(255,255,255,.3);margin-bottom:24px}
+.ct-delivery span{color:var(--p);font-weight:700}
+.checkout-btn{width:100%;padding:20px;background:var(--p);color:var(--white);border:none;border-radius:16px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;cursor:none;transition:.3s;letter-spacing:1px;text-transform:uppercase}
+.checkout-btn:hover{background:var(--p2);transform:translateY(-2px);box-shadow:0 16px 40px rgba(147,197,114,.35)}
+
+/* ===== FOOTER ===== */
+footer{background:#0d1117;padding:80px 60px 40px;position:relative;overflow:hidden}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--p),transparent)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;margin-bottom:60px}
+.footer-brand-logo{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.footer-brand-logo img{width:48px;height:48px;border-radius:50%;border:2px solid rgba(147,197,114,.3)}
+.footer-brand-name{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--white);letter-spacing:3px}
+.footer-brand-desc{color:rgba(255,255,255,.3);font-size:13px;line-height:1.7;margin-bottom:28px;max-width:280px}
+.footer-col-title{font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--p);margin-bottom:20px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:12px}
+.footer-links a{color:rgba(255,255,255,.4);text-decoration:none;font-size:13px;font-weight:500;transition:.2s}
+.footer-links a:hover{color:var(--p)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:32px;border-top:1px solid rgba(255,255,255,.06)}
+.footer-copy{font-size:12px;color:rgba(255,255,255,.2)}
+.footer-copy span{color:var(--p)}
+.footer-legal{display:flex;gap:24px}
+.footer-legal a{font-size:12px;color:rgba(255,255,255,.2);text-decoration:none;transition:.2s}
+.footer-legal a:hover{color:rgba(255,255,255,.5)}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(120px);z-index:999;background:var(--dark2);color:var(--white);padding:16px 32px;border-radius:50px;font-size:14px;font-weight:700;pointer-events:none;transition:.4s cubic-bezier(.23,1,.32,1);border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 60px rgba(0,0,0,.4);white-space:nowrap;display:flex;align-items:center;gap:12px}
+.toast::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--p);flex-shrink:0}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ===== REVEAL ANIMATION ===== */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.23,1,.32,1),transform .8s cubic-bezier(.23,1,.32,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+  nav{padding:0 32px}
+  .hero-content,.catalog,.about,.gallery,.delivery,.contact,.footer-grid{padding-left:32px;padding-right:32px}
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .about-img-stack{height:400px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .hero-stats{right:32px;bottom:60px}
+  .gallery-grid{padding:0 32px}
+}
+@media(max-width:768px){
+  .nav-links,.nav-phone{display:none}
+  .delivery-cards{grid-template-columns:1fr}
+  .hero-stats{display:none}
+  .hero-title{font-size:72px}
+  .cart-sidebar{width:100%;border-left:none}
+  .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .g-item:nth-child(n){grid-column:span 1;grid-row:span 1}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">
+    <!-- LOGO: замените src на путь к вашему логотипу -->
+    <img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=100&q=80" alt="Батя Крутит лого" id="logoImg">
+    <span class="nav-logo-text">БАТЯ КРУТИТ</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#catalog">Меню</a></li>
+    <li><a href="#about">О нас</a></li>
+    <li><a href="#delivery">Доставка</a></li>
+    <li><a href="#contact">Контакты</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="tel:+78000000000" class="nav-phone">+7 (800) 000-00-00</a>
+    <button class="btn-cart" onclick="toggleCart()">
+      🛒 Корзина <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-video-bg">
+    <img class="hero-img" src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=1800&q=85" alt="Суши фон">
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-overlay2"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-dot"></div>
+      <span class="hero-eyebrow-text">Суши-бар · Работаем с 11:00 до 23:00</span>
+    </div>
+    <h1 class="hero-title">
+      БАТЯ
+      <em class="line2">КРУТИТ</em>
+      <span class="line3">СУШИ БАР</span>
+    </h1>
+    <p class="hero-desc">По-крупному. По-настоящему. Авторские роллы с характером, свежие ингредиенты каждый день и доставка за 30 минут.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">Смотреть меню →</button>
+      <button class="btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Позвонить нам</button>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-n">40+</div>
+      <div class="hero-stat-l">Позиций</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-n">30</div>
+      <div class="hero-stat-l">Мин доставка</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-n">4.9</div>
+      <div class="hero-stat-l">Рейтинг</div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span class="scroll-line"></span>
+    Прокрутить вниз
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <span class="marquee-item">БАТЯ КРУТИТ <span class="marquee-sep"></span></span>
+    <span class="marquee-item">ХОЛОДНЫЕ РОЛЛЫ <span class="marquee-sep"></span></span>
+    <span class="marquee-item">ГОРЯЧИЕ РОЛЛЫ <span class="marquee-sep"></span></span>
+    <span class="marquee-item">ЗАПЕЧЁННЫЕ <span class="marquee-sep"></span></span>
+    <span class="marquee-item">МИДИИ <span class="marquee-sep"></span></span>
+    <span class="marquee-item">ТЕМПУРА <span class="marquee-sep"></span></span>
+    <span class="marquee-item">ДОСТАВКА 30 МИН <span class="marquee-sep"></span></span>
+    <span class="marquee-item">БАТЯ КРУТИТ <span class="marquee-sep"></span></span>
+    <span class="marquee-item">ХОЛОДНЫЕ РОЛЛЫ <span class="marquee-sep"></span></span>
+    <span class="marquee-item">ГОРЯЧИЕ РОЛЛЫ <span class="marquee-sep"></span></span>
+    <span class="marquee-item">ЗАПЕЧЁННЫЕ <span class="marquee-sep"></span></span>
+    <span class="marquee-item">МИДИИ <span class="marquee-sep"></span></span>
+    <span class="marquee-item">ТЕМПУРА <span class="marquee-sep"></span></span>
+    <span class="marquee-item">ДОСТАВКА 30 МИН <span class="marquee-sep"></span></span>
+  </div>
+</div>
+
+<!-- CATALOG -->
+<section class="catalog" id="catalog">
+  <div class="catalog-header reveal">
+    <div>
+      <div class="section-label"><span class="label-line"></span><span class="label-text">Наше меню</span></div>
+      <div class="catalog-title">ВЫБЕРИ<br><em>СВОЙ РОЛЛ</em></div>
+    </div>
+  </div>
+  <div class="cats-wrap reveal" id="catsWrap"></div>
+  <div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <div class="section-label"><span class="label-line"></span><span class="label-text">О нас</span></div>
+      <h2 class="about-title">МЫ ЗНАЕМ<br><span>ТОЛК В РОЛЛАХ</span></h2>
+      <p class="about-body">
+        <strong>Батя Крутит</strong> — это не просто суши-бар. Это характер, вкус и уважение к продукту. Мы работаем только со <strong>свежей рыбой</strong>, выбираем лучшие ингредиенты и не идём на компромисс с качеством.<br><br>
+        Каждый ролл создаётся вручную нашими мастерами, которые знают своё дело. Никаких полуфабрикатов, никаких лишних добавок — только <strong>честный вкус</strong>.
+      </p>
+      <div class="about-features">
+        <div class="feat-card">
+          <div class="feat-icon">🐟</div>
+          <div class="feat-title">Свежая рыба</div>
+          <div class="feat-desc">Ежедневная поставка от проверенных поставщиков</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🍚</div>
+          <div class="feat-title">Японский рис</div>
+          <div class="feat-desc">Только премиальный рис с правильной текстурой</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">⚡</div>
+          <div class="feat-title">Быстрая доставка</div>
+          <div class="feat-desc">30 минут по городу или бесплатно</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🏆</div>
+          <div class="feat-title">Авторские рецепты</div>
+          <div class="feat-desc">Уникальные роллы, которых нет у конкурентов</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-img-stack reveal">
+      <img class="about-img-main" src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800&q=85" alt="Суши крупно">
+      <img class="about-img-sec" src="https://images.unsplash.com/photo-1617196034099-2f1631bbdcf9?w=600&q=85" alt="Приготовление роллов">
+      <div class="about-img-badge">
+        <div class="badge-num">5+</div>
+        <div class="badge-label">Лет опыта</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <h2 class="gallery-title reveal">НАШИ <span>ШЕДЕВРЫ</span></h2>
+  <div class="gallery-grid reveal">
+    <div class="g-item">
+      <img src="https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=900&q=85" alt="Галерея 1">
+      <div class="g-overlay"><span class="g-label">Фирменные роллы</span></div>
+    </div>
+    <div class="g-item">
+      <img src="https://images.unsplash.com/photo-1562802378-063ec186a863?w=700&q=85" alt="Галерея 2">
+      <div class="g-overlay"><span class="g-label">Горячие роллы</span></div>
+    </div>
+    <div class="g-item">
+      <img src="https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=600&q=85" alt="Галерея 3">
+      <div class="g-overlay"><span class="g-label">Темпура</span></div>
+    </div>
+    <div class="g-item">
+      <img src="https://images.unsplash.com/photo-1534482421-64566f976cfa?w=600&q=85" alt="Галерея 4">
+      <div class="g-overlay"><span class="g-label">Мидии</span></div>
+    </div>
+    <div class="g-item">
+      <img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=700&q=85" alt="Галерея 5">
+      <div class="g-overlay"><span class="g-label">Запечённые роллы</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERY -->
+<section class="delivery" id="delivery">
+  <div class="section-label reveal"><span class="label-line"></span><span class="label-text">Доставка</span></div>
+  <h2 class="delivery-title reveal">КАК МЫ<br><span>ДОСТАВЛЯЕМ</span></h2>
+  <p class="delivery-sub reveal">Горячие и свежие роллы — прямо к вашей двери или на самовывоз без ожидания.</p>
+  <div class="delivery-cards">
+    <div class="del-card reveal">
+      <div class="del-icon">🚗</div>
+      <h3 class="del-title">Курьерская доставка</h3>
+      <p class="del-desc">Доставляем горячими в специальной термосумке. Следите за курьером в реальном времени.</p>
+      <div class="del-detail">
+        <div class="del-row"><span class="del-row-label">Время доставки</span><span class="del-row-val">30–45 мин</span></div>
+        <div class="del-row"><span class="del-row-label">Минимальный заказ</span><span class="del-row-val">500 ₽</span></div>
+        <div class="del-row"><span class="del-row-label">Стоимость</span><span class="del-row-val">150 ₽</span></div>
+        <div class="del-row"><span class="del-row-label">Бесплатно от</span><span class="del-row-val">1 500 ₽</span></div>
+      </div>
+    </div>
+    <div class="del-card featured reveal">
+      <div class="del-icon">⚡</div>
+      <h3 class="del-title" style="color:var(--white)">Экспресс-доставка</h3>
+      <p class="del-desc">Максимально быстро — для тех, кто не любит ждать. Гарантированные 30 минут.</p>
+      <div class="del-detail">
+        <div class="del-row"><span class="del-row-label">Время доставки</span><span class="del-row-val">до 30 мин</span></div>
+        <div class="del-row"><span class="del-row-label">Минимальный заказ</span><span class="del-row-val">800 ₽</span></div>
+        <div class="del-row"><span class="del-row-label">Стоимость</span><span class="del-row-val">250 ₽</span></div>
+        <div class="del-row"><span class="del-row-label">Гарантия</span><span class="del-row-val">Возврат при опоздании</span></div>
+      </div>
+    </div>
+    <div class="del-card reveal">
+      <div class="del-icon">🏪</div>
+      <h3 class="del-title">Самовывоз</h3>
+      <p class="del-desc">Забирайте заказ без ожидания. Скидка 10% при самовывозе на все позиции.</p>
+      <div class="del-detail">
+        <div class="del-row"><span class="del-row-label">Время ожидания</span><span class="del-row-val">15–20 мин</span></div>
+        <div class="del-row"><span class="del-row-label">Скидка</span><span class="del-row-val">10% на всё</span></div>
+        <div class="del-row"><span class="del-row-label">Минимальный заказ</span><span class="del-row-val">Нет</span></div>
+        <div class="del-row"><span class="del-row-label">Адрес</span><span class="del-row-val">Ул. Примерная, 1</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-grid">
+    <div class="reveal">
+      <div class="section-label"><span class="label-line"></span><span class="label-text">Контакты</span></div>
+      <h2 class="contact-title">СВЯЖИТЕСЬ<br><span>С НАМИ</span></h2>
+      <p class="contact-desc">Принимаем заказы по телефону, в мессенджерах и на сайте. Работаем ежедневно с 11:00 до 23:00.</p>
+      <div class="contact-info">
+        <div class="contact-row">
+          <div class="contact-icon">📞</div>
+          <div>
+            <div class="contact-row-label">Телефон</div>
+            <div class="contact-row-val"><a href="tel:+78000000000">+7 (800) 000-00-00</a></div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-row-label">Адрес</div>
+            <div class="contact-row-val">Ул. Примерная, 1, г. Ваш Город</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-icon">🕐</div>
+          <div>
+            <div class="contact-row-label">Время работы</div>
+            <div class="contact-row-val">Ежедневно 11:00 — 23:00</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-icon">✉️</div>
+          <div>
+            <div class="contact-row-label">Email</div>
+            <div class="contact-row-val"><a href="mailto:info@batyakrutit.ru">info@batyakrutit.ru</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="social-row">
+        <a href="#" class="social-btn" title="VK">VK</a>
+        <a href="#" class="social-btn" title="Telegram">TG</a>
+        <a href="#" class="social-btn" title="WhatsApp">WA</a>
+        <a href="#" class="social-btn" title="Instagram">IG</a>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="order-form">
+        <div class="form-title">БЫСТРЫЙ ЗАКАЗ</div>
+        <div class="form-group">
+          <label>Ваше имя</label>
+          <input type="text" class="form-input" placeholder="Иван Петров">
+        </div>
+        <div class="form-group">
+          <label>Телефон</label>
+          <input type="tel" class="form-input" placeholder="+7 (___) ___-__-__">
+        </div>
+        <div class="form-group">
+          <label>Адрес доставки</label>
+          <input type="text" class="form-input" placeholder="Ул. Примерная, д. 1, кв. 1">
+        </div>
+        <div class="form-group">
+          <label>Комментарий к заказу</label>
+          <textarea class="form-input textarea" placeholder="Не острое, без лука..."></textarea>
+        </div>
+        <button class="form-submit" onclick="submitForm(this)">Оформить заказ →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-logo">
+        <img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=100&q=80" alt="Батя Крутит">
+        <span class="footer-brand-name">БАТЯ КРУТИТ</span>
+      </div>
+      <p class="footer-brand-desc">Суши-бар с характером. Роллы, которые ты запомнишь. Без компромиссов с вкусом и качеством.</p>
+      <div class="social-row">
+        <a href="#" class="social-btn" title="VK">VK</a>
+        <a href="#" class="social-btn" title="Telegram">TG</a>
+        <a href="#" class="social-btn" title="WhatsApp">WA</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Меню</div>
+      <ul class="footer-links">
+        <li><a href="#catalog">Холодные роллы</a></li>
+        <li><a href="#catalog">Запечённые роллы</a></li>
+        <li><a href="#catalog">Горячие роллы</a></li>
+        <li><a href="#catalog">Салаты</a></li>
+        <li><a href="#catalog">Закуски</a></li>
+        <li><a href="#catalog">Темпура</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Компания</div>
+      <ul class="footer-links">
+        <li><a href="#about">О нас</a></li>
+        <li><a href="#delivery">Доставка</a></li>
+        <li><a href="#contact">Контакты</a></li>
+        <li><a href="#">Вакансии</a></li>
+        <li><a href="#">Акции</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Контакты</div>
+      <ul class="footer-links">
+        <li><a href="tel:+78000000000">+7 (800) 000-00-00</a></li>
+        <li><a href="mailto:info@batyakrutit.ru">info@batyakrutit.ru</a></li>
+        <li><a href="#">Ул. Примерная, 1</a></li>
+        <li><a href="#">Пн–Вс: 11:00–23:00</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 <span>Батя Крутит</span>. Все права защищены.</div>
+    <div class="footer-legal">
+      <a href="#">Политика конфиденциальности</a>
+      <a href="#">Публичная оферта</a>
+    </div>
+  </div>
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-head">
+    <div>
+      <div class="cart-head-title">КОРЗИНА</div>
+      <div class="cart-head-count" id="cartHeadCount">0 позиций</div>
+    </div>
+    <button class="close-cart" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items-list" id="cartItemsList"></div>
+  <div class="cart-footer">
+    <div class="delivery-switch">
+      <button class="ds-opt active" id="dsSelf" onclick="setDeliveryType('pickup')">🏪 Самовывоз</button>
+      <button class="ds-opt" id="dsDelivery" onclick="setDeliveryType('delivery')">🚗 Доставка</button>
+    </div>
+    <div class="cart-total-block">
+      <span class="ct-label">К оплате</span>
+      <span class="ct-value" id="cartTotalVal">0 ₽</span>
+    </div>
+    <div class="ct-delivery" id="deliveryNote">Самовывоз — <span>бесплатно</span></div>
+    <button class="checkout-btn" onclick="checkout()">Оформить заказ →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== DATA ===== */
+const CATS = [
+  {id:'all',label:'Все позиции'},
+  {id:'холодные',label:'🌿 Холодные'},
+  {id:'запеченные',label:'🔥 Запечённые'},
+  {id:'горячие',label:'♨️ Горячие'},
+  {id:'салаты',label:'🥗 Салаты'},
+  {id:'мидии',label:'🦪 Мидии'},
+  {id:'закуски',label:'🥟 Закуски'},
+  {id:'темпура',label:'🍤 Темпура'},
+  {id:'сырные_палочки',label:'🧀 Сырные палочки'},
+];
+
+const PRODUCTS = [
+  {id:1,name:'Батя Классик',desc:'Лосось, авокадо, огурец, сыр Филадельфия, нори',price:520,weight:260,pieces:8,cat:'холодные',img:'https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80',badge:'hit'},
+  {id:2,name:'Чёрный Дракон',desc:'Угорь, икра тобико, авокадо, чёрный рис, кунжут',price:680,weight:280,pieces:8,cat:'холодные',img:'https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&q=80',badge:null},
+  {id:3,name:'Красный Батон',desc:'Тунец, красная икра, авокадо, соус понзу',price:740,weight:290,pieces:8,cat:'холодные',img:'https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=600&q=80',badge:'new'},
+  {id:4,name:'Батя Запёк',desc:'Краб, сыр Филадельфия, запечённый под соусом унаги',price:560,weight:250,pieces:8,cat:'запеченные',img:'https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=600&q=80',badge:'hit'},
+  {id:5,name:'Огненный Лосось',desc:'Лосось, спайси-соус, кунжут, зелёный лук',price:610,weight:270,pieces:8,cat:'запеченные',img:'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=600&q=80',badge:null},
+  {id:6,name:'Горячий Краб',desc:'Краб, авокадо, соус спайси, жареный во фритюре',price:590,weight:240,pieces:8,cat:'горячие',img:'https://images.unsplash.com/photo-1617196034099-2f1631bbdcf9?w=600&q=80',badge:null},
+  {id:7,name:'Темпура Кинг',desc:'Королевская креветка в хрустящем кляре, соус',price:480,weight:200,pieces:6,cat:'темпура',img:'https://images.unsplash.com/photo-1534482421-64566f976cfa?w=600&q=80',badge:'new'},
+  {id:8,name:'Мидии Батя',desc:'Запечённые мидии с сыром и соусом унаги',price:420,weight:180,pieces:6,cat:'мидии',img:'https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=600&q=80',badge:null},
+  {id:9,name:'Острый Тунец',desc:'Тунец, огурец, спайси, кунжут, зелёный лук',price:660,weight:280,pieces:8,cat:'холодные',img:'https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&q=80',badge:null},
+  {id:10,name:'Сырные Палочки',desc:'Хрустящие сырные палочки с соусом тар-тар',price:280,weight:160,pieces:8,cat:'сырные_палочки',img:'https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80',badge:null},
+  {id:11,name:'Салат Чука',desc:'Морские водоросли, кунжут, кисло-сладкий соус',price:320,weight:150,pieces:null,cat:'салаты',img:'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=600&q=80',badge:null},
+  {id:12,name:'Закуска Гнездо',desc:'Авокадо, тунец, икра масаго, чипсы Васаби',price:380,weight:170,pieces:null,cat:'закуски',img:'https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=600&q=80',badge:'new'},
+];
+
+let cart = {};
+let deliveryType = 'pickup';
+let currentCat = 'all';
+let favorites = new Set();
+
+/* ===== CURSOR ===== */
+const cursor = document.getElementById('cursor');
+const follower = document.getElementById('cursorFollower');
+let mx = 0, my = 0, fx = 0, fy = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+(function animFollower(){
+  fx += (mx - fx) * 0.12;
+  fy += (my - fy) * 0.12;
+  follower.style.left = fx+'px';
+  follower.style.top = fy+'px';
+  requestAnimationFrame(animFollower);
+})();
+document.querySelectorAll('a,button,.product-card,.cat-btn,.social-btn').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(2.5)'; follower.style.opacity = '0'; });
+  el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)'; follower.style.opacity = '1'; });
+});
+
+/* ===== NAV SCROLL ===== */
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ===== REVEAL ON SCROLL ===== */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if(e.isIntersecting){
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ===== CATEGORIES ===== */
+function renderCats() {
+  document.getElementById('catsWrap').innerHTML = CATS.map(c =>
+    `<button class="cat-btn${c.id===currentCat?' active':''}" onclick="filterCat('${c.id}')">${c.label}</button>`
+  ).join('');
+}
+
+function filterCat(id) {
+  currentCat = id;
+  renderCats();
+  renderProducts();
+}
+
+/* ===== PRODUCTS ===== */
+function renderProducts() {
+  const list = currentCat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === currentCat);
+  document.getElementById('productGrid').innerHTML = list.map((p, i) => {
+    const badgeHtml = p.badge === 'hit'
+      ? '<span class="prod-badge badge-hit">Хит</span>'
+      : p.badge === 'new'
+      ? '<span class="prod-badge badge-new">New</span>'
+      : '';
+    const inCart = cart[p.id] > 0;
+    return `
+    <div class="product-card reveal" style="animation-delay:${i*60}ms" data-id="${p.id}">
+      <div class="prod-img-wrap">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        ${badgeHtml}
+        <button class="prod-fav${favorites.has(p.id)?' active':''}" onclick="toggleFav(${p.id},this)" title="В избранное">♡</button>
+        <div class="prod-overlay"><p class="prod-overlay-text">${p.desc}</p></div>
+      </div>
+      <div class="prod-body">
+        <div class="prod-category">${p.cat.replace('_',' ')}</div>
+        <div class="prod-name">${p.name}</div>
+        <div class="prod-desc">${p.desc}</div>
+        <div class="prod-meta">
+          <div class="prod-meta-item"><span class="prod-meta-icon">⚖️</span>${p.weight}г</div>
+          ${p.pieces ? `<div class="prod-meta-item"><span class="prod-meta-icon">🍽</span>${p.pieces} шт</div>` : ''}
+        </div>
+        <div class="prod-footer">
+          <div>
+            <div class="prod-price">${p.price} ₽</div>
+          </div>
+          <button class="add-to-cart${inCart?' added':''}" onclick="addToCart(${p.id},this)" title="В корзину">
+            ${inCart ? '✓' : '+'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.product-card.reveal').forEach(el => observer.observe(el));
+}
+
+function toggleFav(id, btn) {
+  if(favorites.has(id)){ favorites.delete(id); btn.classList.remove('active'); btn.textContent = '♡'; }
+  else { favorites.add(id); btn.classList.add('active'); btn.textContent = '♥'; }
+}
+
+/* ===== CART ===== */
+function addToCart(id, btn) {
+  cart[id] = (cart[id]||0) + 1;
+  btn.classList.add('added');
+  btn.textContent = '✓';
+  updateCartCount();
+  const p = PRODUCTS.find(x => x.id === id);
+  showToast(`${p.name} добавлен в корзину`);
+}
+
+function updateCartCount() {
+  const total = Object.values(cart).reduce((a,b) => a+b, 0);
+  document.getElementById('cartBadge').textContent = total;
+  const count = Object.keys(cart).filter(k => cart[k] > 0).length;
+  document.getElementById('cartHeadCount').textContent = count + ' ' + plural(count, 'позиция','позиции','позиций');
+}
+
+function plural(n, a, b, c) {
+  const m = n % 10, m2 = n % 100;
+  if(m === 1 && m2 !== 11) return a;
+  if(m >= 2 && m <= 4 && (m2 < 10 || m2 >= 20)) return b;
+  return c;
+}
+
+function toggleCart() {
+  document.getElementById('cartSidebar').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+  renderCart();
+}
+
+function renderCart() {
+  const keys = Object.keys(cart).filter(k => cart[k] > 0);
+  const list = document.getElementById('cartItemsList');
+  if(!keys.length){
+    list.innerHTML = `<div class="cart-empty"><span class="empty-icon">🛒</span><div class="empty-txt">Корзина пуста</div><div class="empty-sub">Добавьте роллы из нашего меню</div></div>`;
+    document.getElementById('cartTotalVal').textContent = '0 ₽';
+    return;
+  }
+  let subtotal = 0;
+  list.innerHTML = keys.map(k => {
+    const p = PRODUCTS.find(x => x.id == k);
+    subtotal += p.price * cart[k];
+    return `<div class="cart-item">
+      <img class="ci-img" src="${p.img}" alt="${p.name}">
+      <div class="ci-info">
+        <div class="ci-name">${p.name}</div>
+        <div class="ci-price">${p.price} ₽</div>
+        <div class="ci-qty-row">
+          <button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button>
+          <span class="qty-n">${cart[k]}</span>
+          <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
+          <button class="ci-del" onclick="removeItem(${p.id})">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  const delivery = deliveryType === 'delivery' ? 150 : 0;
+  const total = subtotal + delivery;
+  document.getElementById('cartTotalVal').textContent = total.toLocaleString('ru') + ' ₽';
+  const note = document.getElementById('deliveryNote');
+  if(deliveryType === 'delivery'){
+    note.innerHTML = subtotal >= 1500 ? 'Доставка — <span>бесплатно</span>' : `Доставка — <span>150 ₽</span>`;
+  } else {
+    note.innerHTML = 'Самовывоз — <span>бесплатно</span> (скидка 10%)';
+  }
+}
+
+function changeQty(id, delta) {
+  cart[id] = Math.max(0, (cart[id]||0) + delta);
+  if(!cart[id]) delete cart[id];
+  updateCartCount();
+  renderCart();
+  renderProducts();
+}
+
+function removeItem(id) {
+  delete cart[id];
+  updateCartCount();
+  renderCart();
+  renderProducts();
+}
+
+function setDeliveryType(type) {
+  deliveryType = type;
+  document.getElementById('dsSelf').classList.toggle('active', type === 'pickup');
+  document.getElementById('dsDelivery').classList.toggle('active', type === 'delivery');
+  renderCart();
+}
+
+function checkout() {
+  if(!Object.keys(cart).length){ showToast('Корзина пуста — добавьте роллы!'); return; }
+  cart = {};
+  updateCartCount();
+  toggleCart();
+  showToast('✅ Заказ принят! Ожидайте звонка оператора');
+}
+
+/* ===== CONTACT FORM ===== */
+function submitForm(btn) {
+  const orig = btn.textContent;
+  btn.textContent = 'Отправляем...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = '✓ Заказ принят!';
+    showToast('✅ Заявка отправлена! Мы перезвоним через 5 минут');
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 3000);
+  }, 1500);
+}
+
+/* ===== TOAST ===== */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ===== INIT ===== */
+renderCats();
+renderProducts();
+</script>
+</body>
+</html>
